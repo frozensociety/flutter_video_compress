@@ -43,8 +43,9 @@ public class SwiftFlutterVideoCompressPlugin: NSObject, FlutterPlugin {
             let duration = args!["duration"] as? Double
             let includeAudio = args!["includeAudio"] as? Bool
             let frameRate = args!["frameRate"] as? Int
+            let removeExif = args!["removeExif"] as? Bool
             compressVideo(path, quality, deleteOrigin, startTime, duration, includeAudio,
-                          frameRate, result)
+                          frameRate, result, removeExif)
         case "cancelCompression":
             cancelCompression(result)
         case "convertVideoToGif":
@@ -171,7 +172,7 @@ public class SwiftFlutterVideoCompressPlugin: NSObject, FlutterPlugin {
     
     private func compressVideo(_ path: String,_ quality: NSNumber,_ deleteOrigin: Bool,_ startTime: Double?,
                                _ duration: Double?,_ includeAudio: Bool?,_ frameRate: Int?,
-                               _ result: @escaping FlutterResult) {
+                               _ result: @escaping FlutterResult,_ removeExif:  Bool?) {
         let sourceVideoUrl = Utility.getPathUrl(path)
         let sourceVideoType = sourceVideoUrl.pathExtension
         
@@ -201,6 +202,10 @@ public class SwiftFlutterVideoCompressPlugin: NSObject, FlutterPlugin {
         exporter.outputURL = compressionUrl
         exporter.outputFileType = AVFileType.mp4
         exporter.shouldOptimizeForNetworkUse = true
+        
+        if (removeExif != nil && removeExif) {
+            exporter.metadata = AVMetadataItem()
+        }
         
         if frameRate != nil {
             let videoComposition = AVMutableVideoComposition(propertiesOf: sourceVideoAsset)

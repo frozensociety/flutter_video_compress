@@ -183,6 +183,7 @@ class FlutterVideoCompress {
     int duration,
     bool includeAudio,
     int frameRate,
+    bool removeExif = true,
   }) async {
     assert(path != null);
     if (_isCompressing) {
@@ -203,6 +204,7 @@ class FlutterVideoCompress {
       'duration': duration,
       'includeAudio': includeAudio,
       'frameRate': frameRate,
+      'removeExif' : removeExif,
     });
     _isCompressing = false;
     final jsonMap = json.decode(jsonStr);

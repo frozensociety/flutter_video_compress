@@ -15,10 +15,18 @@ class FFmpegCommander(private val context: Context, private val channelName: Str
     private var totalTime: Long = 0
 
 
-    fun compressVideo(path: String, quality: VideoQuality, deleteOrigin: Boolean,
-                      startTime: Int?, duration: Int? = null, includeAudio: Boolean?,
-                      frameRate: Int?, result: MethodChannel.Result,
-                      messenger: BinaryMessenger) {
+    fun compressVideo(
+            path: String,
+            quality: VideoQuality,
+            deleteOrigin: Boolean,
+            startTime: Int?,
+            duration: Int? = null,
+            includeAudio: Boolean?,
+            frameRate: Int?,
+            result: MethodChannel.Result,
+            messenger: BinaryMessenger,
+            removeExif: Boolean
+    ) {
 
         val ffmpeg = FFmpeg.getInstance(context)
 
@@ -59,6 +67,11 @@ class FFmpegCommander(private val context: Context, private val channelName: Str
         if (frameRate != null) {
             cmdArray.add("-r")
             cmdArray.add(frameRate.toString())
+        }
+
+        if (removeExif) {
+            cmdArray.add("-map_metadata")
+            cmdArray.add("-1")
         }
 
         cmdArray.add(file.absolutePath)
